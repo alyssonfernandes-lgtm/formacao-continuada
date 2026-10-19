@@ -5,11 +5,24 @@ import { migrate } from './db/migrate.js';
 import { startEmailWorker, stopEmailWorker } from './services/email-queue.js';
 import { runMaintenance } from './services/maintenance.js';
 import { seedDefaultLogo } from './services/settings.js';
+import { hashPassword } from './services/auth.js';
+import { passwordSchema } from '../shared/validation.js';
 import { fileURLToPath } from 'node:url';
 
 const cfg = loadConfig();
 const app = await buildApp();
 await migrate(getPool(), (m) => app.log.info(m));
+if (cfg.INITIAL_ADMIN_EMAIL && cfg.INITIAL_ADMIN_PASSWORD) {
+  const pw = passwordSchema.safeParse(cfg.INITIAL_ADMIN_PASSWORD);
+  if (!pw.success) app.log.error('INITIAL_ADMIN_PASSWORD não atende à política de senha; administrador inicial não criado');
+  else {
+    const r = await getPool().query(
+      `INSERT INTO users(name, email, role, password_hash) SELECT $1, lower($2), 'admin', $3 WHERE NOT EXISTS (SELECT 1 FROM users)`,
+      [cfg.INITIAL_ADMIN_NAME || 'Administrador', cfg.INITIAL_ADMIN_EMAIL, await hashPassword(cfg.INITIAL_ADMIN_PASSWORD)],
+    );
+    if (r.rowCount) app.log.info('administrador inicial criado');
+  }
+}
 if (await seedDefaultLogo(getPool(), fileURLToPath(new URL('./assets/logo-padrao.png', import.meta.url)))) app.log.info('logotipo padrão carregado');
 
 let maint: NodeJS.Timeout | null = null;

@@ -30,6 +30,10 @@ const schema = z.object({
     .transform((v) => v !== 'false'),
   WORKER_POLL_MS: z.coerce.number().int().positive().default(5000),
   LOG_LEVEL: z.string().default('info'),
+  // Primeiro administrador, criado só se ainda não houver nenhum usuário (útil em hospedagens sem terminal)
+  INITIAL_ADMIN_NAME: z.string().optional(),
+  INITIAL_ADMIN_EMAIL: z.preprocess((v) => (v === '' ? undefined : v), z.string().email().optional()),
+  INITIAL_ADMIN_PASSWORD: z.string().optional(),
 });
 
 export type Config = z.infer<typeof schema>;
