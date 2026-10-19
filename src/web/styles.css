@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --c-primary: 29 78 216;
+  --c-primary-fg: 255 255 255;
+  --c-secondary: 15 118 110;
+  --c-secondary-fg: 255 255 255;
+}
+
+@layer base {
+  html { -webkit-text-size-adjust: 100%; }
+  body { min-height: 100dvh; }
+  :focus-visible { outline: 3px solid rgb(var(--c-primary)); outline-offset: 2px; }
+  h1, h2, h3 { text-wrap: balance; }
+}
+
+@layer components {
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 min-h-[44px]; }
+  .btn-primary { @apply btn bg-primary text-primary-fg hover:brightness-110; }
+  .btn-secondary { @apply btn bg-white text-slate-800 ring-1 ring-inset ring-slate-300 hover:bg-slate-50; }
+  .btn-danger { @apply btn bg-red-700 text-white hover:bg-red-800; }
+  .btn-ghost { @apply btn text-slate-700 hover:bg-slate-100; }
+  .input { @apply block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-base text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30 sm:text-sm min-h-[44px]; }
+  .input[aria-invalid='true'] { @apply border-red-600 ring-red-200; }
+  .label { @apply mb-1 block text-sm font-medium text-slate-800; }
+  .card { @apply rounded-xl bg-white shadow-sm ring-1 ring-slate-200; }
+  .table-wrap { @apply overflow-x-auto rounded-xl bg-white ring-1 ring-slate-200; }
+  .tbl { @apply min-w-full divide-y divide-slate-200 text-sm; }
+  .tbl th { @apply whitespace-nowrap bg-slate-50 px-3 py-2.5 text-left text-xs font-semibold uppercase tracking-wide text-slate-600; }
+  .tbl td { @apply px-3 py-2.5 align-top text-slate-800; }
+  .tbl tbody tr { @apply hover:bg-slate-50; }
+}

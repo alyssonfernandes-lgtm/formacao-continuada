@@ -1,0 +1,47 @@
+# Implantação no Render (https://render.com): aplicação Node + PostgreSQL gerenciado, com HTTPS automático.
+# As chaves DATA_ENCRYPTION_KEY e CPF_HMAC_KEY são informadas no painel do Render (openssl rand -hex 32), nunca aqui.
+services:
+  - type: web
+    name: formacao-continuada
+    runtime: node
+    plan: starter
+    region: virginia
+    buildCommand: npm ci --include=dev && npm run build && npm prune --omit=dev
+    startCommand: node dist/server/server/index.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: "22"
+      - key: TRUST_PROXY
+        value: "true"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: formacao-db
+          property: connectionString
+      - key: PUBLIC_URL
+        sync: false
+      - key: DATA_ENCRYPTION_KEY
+        sync: false
+      - key: CPF_HMAC_KEY
+        sync: false
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_REQUIRE_TLS
+        value: "true"
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: SMTP_FROM
+        sync: false
+
+databases:
+  - name: formacao-db
+    databaseName: formacao
+    user: formacao
+    plan: basic-256mb
+    postgresMajorVersion: "16"
