@@ -59,8 +59,8 @@ export function AdminLayout() {
       </header>
       {menu && <div id="menu-movel" className="border-b border-slate-200 bg-white p-3 lg:hidden">{sidebar}<button onClick={logout} className="btn-ghost mt-2 w-full justify-start"><Icon name="logout" />Sair</button></div>}
       <aside className="hidden border-r border-slate-200 bg-white lg:flex lg:flex-col">
-        <Link to="/admin" className="flex items-center gap-3 border-b border-slate-200 p-4 text-primary">
-          <Logo className="h-10" />
+        <Link to="/admin" className={`flex gap-3 border-b border-slate-200 p-4 text-primary ${settings?.hasLogo ? 'flex-col' : 'items-center'}`}>
+          <Logo className={settings?.hasLogo ? 'h-14 self-start' : 'h-10'} />
           <span className="min-w-0 text-sm font-semibold leading-tight text-slate-900">{settings?.platformName}</span>
         </Link>
         <div className="flex-1 p-3">{sidebar}</div>

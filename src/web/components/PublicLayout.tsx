@@ -5,13 +5,22 @@ import { Logo } from './Logo';
 export function PublicLayout() {
   const { settings } = useApp();
   const nav = ({ isActive }: { isActive: boolean }) => `rounded-md px-3 py-2 text-sm font-medium ${isActive ? 'bg-white/20' : 'hover:bg-white/10'}`;
+  // Fundo branco atrás do logotipo: logos institucionais costumam usar a cor principal e sumiriam na faixa colorida
   return (
     <div className="flex min-h-dvh flex-col">
       <a href="#conteudo" className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:rounded focus:bg-white focus:p-2">Ir para o conteúdo</a>
-      <header className="bg-primary text-primary-fg">
+      <header>
+        {settings?.hasLogo && (
+          <div className="bg-white">
+            <div className="mx-auto max-w-6xl px-4 py-3">
+              <Link to="/" className="inline-block"><Logo className="h-12 sm:h-16" /></Link>
+            </div>
+          </div>
+        )}
+        <div className="bg-primary text-primary-fg">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-4">
           <Link to="/" className="flex min-w-0 items-center gap-3">
-            <Logo className="h-11" />
+            {!settings?.hasLogo && <Logo className="h-11" />}
             <span className="min-w-0">
               <span className="block truncate text-xs opacity-90">{[settings?.department, settings?.municipality].filter(Boolean).join(' · ')}</span>
               <span className="block truncate text-lg font-bold leading-tight">{settings?.platformName ?? 'Formação Continuada'}</span>
@@ -22,6 +31,7 @@ export function PublicLayout() {
             <NavLink to="/verificar" className={nav}>Verificar certificado</NavLink>
             <NavLink to="/admin" className={nav}>Área restrita</NavLink>
           </nav>
+        </div>
         </div>
       </header>
       <main id="conteudo" className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
