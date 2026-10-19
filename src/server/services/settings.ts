@@ -40,11 +40,11 @@ export const DEFAULT_SETTINGS: z.infer<typeof settingsSchema> = {
   department: 'Secretaria Municipal de Educação',
   primaryColor: '#0b3f86',
   secondaryColor: '#0f766e',
-  contactEmail: '',
-  contactPhone: '',
-  contactAddress: '',
+  contactEmail: 'educacao@balneariorincao.sc.gov.br',
+  contactPhone: '(48) 3468-7245',
+  contactAddress: 'Rua Urubici, 989 — Balneário Rincão/SC · Atendimento: segunda a sexta, 8h às 12h e 13h às 17h',
   timezone: 'America/Sao_Paulo',
-  controllerName: '',
+  controllerName: 'Prefeitura Municipal de Balneário Rincão, por meio da Secretaria Municipal de Educação',
   dpoName: '',
   dpoContact: '',
   privacyExtra: '',
@@ -123,4 +123,18 @@ export async function seedDefaultLogo(db: Db, file: string) {
   await db.query(`INSERT INTO settings(key, value) VALUES ('logo', $1) ON CONFLICT (key) DO NOTHING`, [{ mime: 'image/png', data: data.toString('base64') }]);
   invalidateSettingsCache();
   return true;
+}
+
+/** Na primeira inicialização, cadastra as unidades da rede municipal (src/server/assets/escolas.json), só se não houver escolas. */
+export async function seedDefaultSchools(db: Db, file: string) {
+  const { rowCount } = await db.query(`INSERT INTO settings(key, value) VALUES ('schools_seeded', 'true') ON CONFLICT (key) DO NOTHING`);
+  if (!rowCount) return 0;
+  const { readFile } = await import('node:fs/promises');
+  const raw = await readFile(file, 'utf8').catch(() => null);
+  if (!raw) return 0;
+  const { escolas } = JSON.parse(raw) as { escolas: { name: string; unit: string }[] };
+  const { rows } = await db.query(`SELECT count(*)::int AS n FROM schools`);
+  if (rows[0].n > 0) return 0;
+  for (const e of escolas) await db.query(`INSERT INTO schools(name, unit) VALUES ($1, $2) ON CONFLICT (name) DO NOTHING`, [e.name, e.unit]);
+  return escolas.length;
 }

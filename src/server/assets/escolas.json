@@ -1,0 +1,17 @@
+{
+  "fonte": "https://balneariorincao.sc.gov.br/governo/secretaria/secretaria-de-educacao/pagina/escolas-ceis/ (consultado em 19/10/2026)",
+  "escolas": [
+    { "name": "Escola Professora Amélia de Souza Silva", "unit": "Ensino Fundamental · Barra Velha" },
+    { "name": "Escola José Réus", "unit": "Ensino Fundamental · Lagoa dos Freitas" },
+    { "name": "Escola Arroio Rincão", "unit": "Ensino Fundamental · Centro" },
+    { "name": "CEI Peixinho Dourado", "unit": "Educação Infantil · Centro" },
+    { "name": "CEI Balanço das Ondas", "unit": "Educação Infantil · União" },
+    { "name": "CEI Navegando no Saber", "unit": "Educação Infantil · Zona Sul" },
+    { "name": "CEI A Pequena Sereia", "unit": "Educação Infantil · Mirassol" },
+    { "name": "CEI Sonho Infantil", "unit": "Educação Infantil · Pedreiras" },
+    { "name": "CEI Cantinho do Rincão", "unit": "Educação Infantil · Urussanga Velha" },
+    { "name": "CEI Pôr do Sol", "unit": "Educação Infantil · Barra Velha" },
+    { "name": "CEI Mundo Mágico", "unit": "Educação Infantil · Lagoa dos Freitas (prédio da Escola José Réus)" },
+    { "name": "Secretaria Municipal de Educação", "unit": "Equipe da Secretaria" }
+  ]
+}

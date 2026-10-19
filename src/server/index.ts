@@ -4,7 +4,7 @@ import { closePool, getPool } from './db/pool.js';
 import { migrate } from './db/migrate.js';
 import { startEmailWorker, stopEmailWorker } from './services/email-queue.js';
 import { runMaintenance } from './services/maintenance.js';
-import { seedDefaultLogo } from './services/settings.js';
+import { seedDefaultLogo, seedDefaultSchools } from './services/settings.js';
 import { hashPassword } from './services/auth.js';
 import { passwordSchema } from '../shared/validation.js';
 import { fileURLToPath } from 'node:url';
@@ -23,6 +23,8 @@ if (cfg.INITIAL_ADMIN_EMAIL && cfg.INITIAL_ADMIN_PASSWORD) {
     if (r.rowCount) app.log.info('administrador inicial criado');
   }
 }
+const escolas = await seedDefaultSchools(getPool(), fileURLToPath(new URL('./assets/escolas.json', import.meta.url)));
+if (escolas) app.log.info(`${escolas} unidades escolares cadastradas`);
 if (await seedDefaultLogo(getPool(), fileURLToPath(new URL('./assets/logo-padrao.png', import.meta.url)))) app.log.info('logotipo padrão carregado');
 
 let maint: NodeJS.Timeout | null = null;
