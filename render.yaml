@@ -1,5 +1,5 @@
 # Implantação no Render (https://render.com): aplicação Node + PostgreSQL gerenciado, com HTTPS automático.
-# As chaves DATA_ENCRYPTION_KEY e CPF_HMAC_KEY são informadas no painel do Render (openssl rand -hex 32), nunca aqui.
+# As chaves DATA_ENCRYPTION_KEY e CPF_HMAC_KEY são geradas pelo Render (generateValue) e nunca ficam no código.
 services:
   - type: web
     name: formacao-continuada
@@ -23,8 +23,12 @@ services:
       - key: PUBLIC_URL
         sync: false
       - key: DATA_ENCRYPTION_KEY
-        sync: false
+        generateValue: true
       - key: CPF_HMAC_KEY
+        generateValue: true
+      - key: INITIAL_ADMIN_EMAIL
+        sync: false
+      - key: INITIAL_ADMIN_PASSWORD
         sync: false
       - key: SMTP_HOST
         sync: false

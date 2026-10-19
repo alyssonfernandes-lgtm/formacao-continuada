@@ -1,7 +1,11 @@
 import { createCipheriv, createDecipheriv, createHash, createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
 import { loadConfig } from '../config.js';
 
-const key = () => Buffer.from(loadConfig().DATA_ENCRYPTION_KEY, 'hex');
+/** 64 hex viram os 32 bytes diretamente; outro segredo é derivado para 32 bytes com SHA-256. */
+function keyBytes(secret: string) {
+  return /^[0-9a-fA-F]{64}$/.test(secret) ? Buffer.from(secret, 'hex') : createHash('sha256').update(secret, 'utf8').digest();
+}
+const key = () => keyBytes(loadConfig().DATA_ENCRYPTION_KEY);
 
 /** AES-256-GCM: [12 bytes IV][16 bytes tag][dados]. */
 export function encrypt(plain: string): Buffer {
@@ -21,7 +25,7 @@ export function decrypt(buf: Buffer): string {
 
 /** Índice cego do CPF: permite unicidade e busca sem guardar o CPF em claro. */
 export function cpfBlindIndex(cpfDigits: string): Buffer {
-  return createHmac('sha256', Buffer.from(loadConfig().CPF_HMAC_KEY, 'hex')).update(cpfDigits).digest();
+  return createHmac('sha256', keyBytes(loadConfig().CPF_HMAC_KEY)).update(cpfDigits).digest();
 }
 
 export const sha256 = (v: string) => createHash('sha256').update(v).digest();

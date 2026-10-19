@@ -34,8 +34,8 @@ Todas estão documentadas em `.env.example`. Os segredos ficam **apenas** no `.e
 | `PUBLIC_URL` | sim | Endereço público com `https://`. Aparece nos e-mails, QR Codes e certificados. **Não altere depois de emitir QR Codes e certificados**, pois os links impressos deixariam de funcionar |
 | `TRUST_PROXY` | sim atrás de proxy | `true` para que o IP real do usuário seja usado nos limites de tentativas e na auditoria |
 | `DATABASE_URL` | sim | Conexão com o PostgreSQL |
-| `DATA_ENCRYPTION_KEY` | sim | 64 caracteres hexadecimais (`openssl rand -hex 32`). Cifra CPF e tokens |
-| `CPF_HMAC_KEY` | sim | 64 caracteres hexadecimais, **diferente** da anterior. Gera o índice para detectar CPF repetido |
+| `DATA_ENCRYPTION_KEY` | sim | Segredo aleatório: 64 caracteres hexadecimais (`openssl rand -hex 32`) ou qualquer valor aleatório com 32+ caracteres, como o do botão "Generate" do Render. Cifra CPF e tokens |
+| `CPF_HMAC_KEY` | sim | Mesmo formato, **diferente** da anterior. Gera o índice para detectar CPF repetido |
 | `SESSION_TTL_HOURS`, `SESSION_IDLE_MINUTES` | não | Duração máxima da sessão do painel (8 h) e tempo de inatividade (60 min) |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_REQUIRE_TLS`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM` | para enviar e-mails | Sem `SMTP_HOST` e `SMTP_FROM`, os e-mails ficam "pendentes" na fila e aparecem assim no painel. Nada é dado como enviado sem o aceite do servidor SMTP. Porta 587: `SMTP_SECURE=false` e `SMTP_REQUIRE_TLS=true`. Porta 465: `SMTP_SECURE=true` |
 | `WORKER_INLINE` | não | `true` (padrão) processa a fila dentro do servidor web. Use `false` e rode `npm run worker` à parte se houver mais de uma instância web |
@@ -86,10 +86,10 @@ O arquivo `render.yaml` cria a aplicação Node e o PostgreSQL gerenciado, com H
 2. No Render, use **New > Blueprint** e escolha o repositório.
 3. Preencha as variáveis pedidas:
    - `PUBLIC_URL`: o endereço https que o Render mostrar;
-   - `DATA_ENCRYPTION_KEY` e `CPF_HMAC_KEY`: gere cada uma com `openssl rand -hex 32`;
+   - `DATA_ENCRYPTION_KEY` e `CPF_HMAC_KEY`: o Blueprint gera valores aleatórios automaticamente;
+   - `INITIAL_ADMIN_EMAIL` e `INITIAL_ADMIN_PASSWORD`: criam o primeiro administrador (senha com 12+ caracteres, letras e números). Apague-as depois do primeiro acesso;
    - `SMTP_*`: credenciais do e-mail. Se deixar em branco, os e-mails ficam pendentes.
-4. Depois do primeiro deploy, crie o administrador. No **Shell** do serviço, rode:
-   `node dist/server/server/scripts/create-admin.js "Nome" email@municipio.gov.br "SenhaForte123456"`
+4. Entre em `/admin` com o e-mail e a senha definidos e troque a senha.
 
 Use planos pagos para o serviço e o banco. No plano gratuito, o serviço "dorme" quando fica sem acesso e o banco tem prazo de validade. Confira os preços atuais no site do Render. O build e a inicialização exatamente como o Render os executa foram testados no ambiente de desenvolvimento.
 

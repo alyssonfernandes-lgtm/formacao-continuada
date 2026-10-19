@@ -12,8 +12,9 @@ const schema = z.object({
   PUBLIC_URL: z.string().url().default('http://localhost:3000'),
   DATABASE_URL: z.string().min(1),
   // Chaves de 32 bytes em hexadecimal (64 caracteres). Gere com: openssl rand -hex 32
-  DATA_ENCRYPTION_KEY: z.string().regex(/^[0-9a-fA-F]{64}$/, 'DATA_ENCRYPTION_KEY deve ter 64 caracteres hexadecimais'),
-  CPF_HMAC_KEY: z.string().regex(/^[0-9a-fA-F]{64}$/, 'CPF_HMAC_KEY deve ter 64 caracteres hexadecimais'),
+  // 64 caracteres hexadecimais (openssl rand -hex 32) ou qualquer segredo aleatório com 32+ caracteres (ex.: botão "Generate" do Render)
+  DATA_ENCRYPTION_KEY: z.string().min(32, 'DATA_ENCRYPTION_KEY deve ter pelo menos 32 caracteres aleatórios'),
+  CPF_HMAC_KEY: z.string().min(32, 'CPF_HMAC_KEY deve ter pelo menos 32 caracteres aleatórios'),
   SESSION_TTL_HOURS: z.coerce.number().positive().default(8),
   SESSION_IDLE_MINUTES: z.coerce.number().positive().default(60),
   TRUST_PROXY: bool,
