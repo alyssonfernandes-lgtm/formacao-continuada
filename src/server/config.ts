@@ -35,6 +35,11 @@ const schema = z.object({
   INITIAL_ADMIN_NAME: z.string().optional(),
   INITIAL_ADMIN_EMAIL: z.preprocess((v) => (v === '' ? undefined : v), z.string().email().optional()),
   INITIAL_ADMIN_PASSWORD: z.string().optional(),
+  // true: redefine a senha do administrador INITIAL_ADMIN_EMAIL para INITIAL_ADMIN_PASSWORD (recuperação sem e-mail)
+  ADMIN_PASSWORD_RESET: z
+    .string()
+    .optional()
+    .transform((v) => v === 'true'),
 });
 
 export type Config = z.infer<typeof schema>;

@@ -187,6 +187,14 @@ O logotipo e as configurações ficam no próprio banco, então o backup do banc
 - **Atualizar dependências:** rode `npm audit` mensalmente. Atualize, rode `npm test` e `npm run test:e2e` e só então implante.
 - **PostgreSQL:** aplique as atualizações menores da versão 16. Uma mudança de versão maior exige `pg_dump` e restauração.
 
+### Esqueci a senha do administrador
+
+Sem e-mail configurado, o link "Esqueci minha senha" não chega. Pela hospedagem:
+
+1. Em **Environment**, ajuste `INITIAL_ADMIN_EMAIL` para o e-mail do administrador e `INITIAL_ADMIN_PASSWORD` para a nova senha (12+ caracteres, letras e números).
+2. Crie `ADMIN_PASSWORD_RESET` = `true` e salve. O serviço reinicia, aplica a nova senha, desbloqueia a conta e registra na auditoria.
+3. Entre com a nova senha e **apague** `ADMIN_PASSWORD_RESET` e `INITIAL_ADMIN_PASSWORD`.
+
 ## 10. Incidentes
 
 | Situação | O que fazer |
